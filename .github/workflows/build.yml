@@ -75,4 +75,8 @@ jobs:
 
       - name: Upload Windows Installer
         uses: actions/upload-release-asset@v1
-        with
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: src/build/ladderup Setup 4.1.10.exe
+          asset_name: ladderup-setup-4.1.10.exe
+          asset_content_type: application/octet-stream
