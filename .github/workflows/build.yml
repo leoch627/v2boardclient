@@ -1,20 +1,21 @@
-name: Build macOS App
+name: Run build.sh on macOS
 
 on:
   push:
     branches:
-      - main
+      - main  # 触发分支
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest  # 使用 macOS 环境
 
     steps:
+      # 检出代码
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm install electron --save-dev
-
-      - name: Build macOS app
-        run: target=bash build.sh
+      # 确保脚本可执行并运行
+      - name: Run build.sh
+        run: |
+          chmod +x ./build.sh  # 确保 build.sh 文件有执行权限
+          ./build.sh
