@@ -26,6 +26,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         tag_name: v4.1.10 # 替换为你需要的版本号
         release_name: "LadderUp v4.1.10"
         draft: false
