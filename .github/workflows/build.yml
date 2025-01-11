@@ -1,21 +1,64 @@
-name: Run build.sh on macOS
+name: Build and Release App
 
 on:
   push:
     branches:
-      - main  # 触发分支
+      - main
 
 jobs:
-  build:
-    runs-on: macos-latest  # 使用 macOS 环境
+  build-and-release:
+    runs-on: macos-latest
 
     steps:
-      # 检出代码
-      - name: Checkout code
-        uses: actions/checkout@v3
+    # 检出代码
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # 确保脚本可执行并运行
-      - name: Run build.sh
-        run: |
-          chmod +x ./build.sh  # 确保 build.sh 文件有执行权限
-          ./build.sh
+    # 安装依赖
+    - name: Install dependencies
+      run: npm install
+
+    # 赋予执行权限并运行构建脚本
+    - name: Run build script
+      run: |
+        chmod +x ./build.sh
+        ./build.sh
+
+    # 打包文件并生成 Release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      with:
+        tag_name: v4.1.10 # 替换为你需要的版本号
+        release_name: "LadderUp v4.1.10"
+        draft: false
+        prerelease: false
+        body: |
+          This release includes the following builds:
+          - macOS (Intel/ARM64)
+          - Windows x64
+
+    # 上传构建文件到 Release
+    - name: Upload Release Assets
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/ladderup-4.1.10-arm64.dmg
+        asset_name: ladderup-4.1.10-arm64.dmg
+        asset_content_type: application/x-apple-diskimage
+
+    - name: Upload macOS x64
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/ladderup-4.1.10.dmg
+        asset_name: ladderup-4.1.10.dmg
+        asset_content_type: application/x-apple-diskimage
+
+    - name: Upload Windows Installer
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: build/ladderup Setup 4.1.10.exe
+        asset_name: ladderup-setup-4.1.10.exe
+        asset_content_type: application/octet-stream
