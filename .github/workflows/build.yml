@@ -12,7 +12,7 @@ jobs:
     steps:
       # 检出代码
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
 
       # 赋予执行权限并运行构建脚本
@@ -25,6 +25,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ladderup_client
           files: |
             src/build/ladderup-4.1.10-arm64.dmg
             src/build/ladderup-4.1.10.dmg
