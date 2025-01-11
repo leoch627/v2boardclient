@@ -6,8 +6,7 @@ on:
       - main
 
 jobs:
-  # 构建 Job
-  build:
+  build_and_release:
     runs-on: macos-latest
 
     steps:
@@ -20,25 +19,6 @@ jobs:
         run: |
           chmod +x ./build.sh
           ./build.sh
-
-      # 保存构建输出
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: src/build
-
-  # 发布 Job
-  release:
-    runs-on: ubuntu-latest
-    needs: build # 发布需要等待构建完成
-
-    steps:
-      # 下载构建输出
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
 
       # 创建 Release
       - name: Create Release
