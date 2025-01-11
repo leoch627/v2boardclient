@@ -6,57 +6,73 @@ on:
       - main
 
 jobs:
-  build-and-release:
+  # 构建 Job
+  build:
     runs-on: macos-latest
 
     steps:
-    # 检出代码
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    # 赋予执行权限并运行构建脚本
-    - name: Run build script
-      run: |
-        chmod +x ./build.sh
-        ./build.sh
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # 打包文件并生成 Release
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 使用内置 GITHUB_TOKEN
-      with:
-        tag_name: v4.1.10 # 替换为你需要的版本号
-        release_name: "LadderUp v4.1.10"
-        draft: false
-        prerelease: false
-        body: |
-          This release includes the following builds:
-          - macOS (Intel/ARM64)
-          - Windows x64
+      # 赋予执行权限并运行构建脚本
+      - name: Run build script
+        run: |
+          chmod +x ./build.sh
+          ./build.sh
 
-    # 上传构建文件到 Release
-    - name: Upload Release Assets
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: src/build/ladderup-4.1.10-arm64.dmg
-        asset_name: ladderup-4.1.10-arm64.dmg
-        asset_content_type: application/x-apple-diskimage
+      # 保存构建输出
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: src/build
 
-    - name: Upload macOS x64
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: src/build/ladderup-4.1.10.dmg
-        asset_name: ladderup-4.1.10.dmg
-        asset_content_type: application/x-apple-diskimage
+  # 发布 Job
+  release:
+    runs-on: ubuntu-latest
+    needs: build # 发布需要等待构建完成
 
-    - name: Upload Windows Installer
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: src/build/ladderup Setup 4.1.10.exe
-        asset_name: ladderup-setup-4.1.10.exe
-        asset_content_type: application/octet-stream
+    steps:
+      # 下载构建输出
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+
+      # 创建 Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v4.1.10 # 替换为你需要的版本号
+          release_name: "LadderUp v4.1.10"
+          draft: false
+          prerelease: false
+          body: |
+            This release includes the following builds:
+            - macOS (Intel/ARM64)
+            - Windows x64
+
+      # 上传构建文件到 Release
+      - name: Upload macOS ARM64
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: src/build/ladderup-4.1.10-arm64.dmg
+          asset_name: ladderup-4.1.10-arm64.dmg
+          asset_content_type: application/x-apple-diskimage
+
+      - name: Upload macOS x64
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: src/build/ladderup-4.1.10.dmg
+          asset_name: ladderup-4.1.10.dmg
+          asset_content_type: application/x-apple-diskimage
+
+      - name: Upload Windows Installer
+        uses: actions/upload-release-asset@v1
+        with
