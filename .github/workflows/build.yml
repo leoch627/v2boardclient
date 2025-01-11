@@ -17,4 +17,4 @@ jobs:
         run: npm install electron --save-dev
 
       - name: Build macOS app
-        run: target=darwin npx electron-builder build --macos --arm64
+        run: target=bash build.sh
