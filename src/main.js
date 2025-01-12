@@ -11,20 +11,20 @@ function init () {
   win = new BrowserWindow({
     width,
     height,
-    show: false,
+    show: true,
     resizable: false,
     frame: false,
     maximizable: false,
     titleBarStyle: 'hiddenInset',
     webPreferences: {
-      devTools: !app.isPackaged,
+      devTools: true,
       nodeIntegration: true,
       webSecurity: false,
       enableRemoteModule: true
     }
   })
 
-  if (app.isPackaged) {
+  
     const server = express()
     server.use('/', express.static(__dirname))
     const srv = server.listen(0, '127.0.0.1', () => {
@@ -34,10 +34,7 @@ function init () {
         win.loadFile('./dist/index.html')
       }
     })
-  } else {
-    win.loadURL('http://127.0.0.1:9000')
-    win.webContents.openDevTools()
-  }
+  
 
   win.once('ready-to-show', () => {
     win.show()
