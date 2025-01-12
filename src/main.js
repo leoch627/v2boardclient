@@ -12,7 +12,7 @@ function init () {
     width,
     height,
     show: true,
-    resizable: false,
+    resizable: true,
     frame: false,
     maximizable: false,
     titleBarStyle: 'hiddenInset',
