@@ -13,7 +13,7 @@
     "tcp-ping": "^0.1.1"
   },
   "build": {
-    "electronVersion": "33.3.1",
+    "electronVersion": "11.0.0",
     "productName": "ladderup",
     "appId": "com.ladderup",
     "copyright": "©2025 ladderup, Inc.",
