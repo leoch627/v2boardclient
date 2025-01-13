@@ -5986,33 +5986,38 @@
 				}))()
 			}
 			getServers() {
-				var e = this;
-				return m()(i.a.mark(function t() {
-					var n;
-					return i.a.wrap(function(t) {
-						while (1) switch (t.prev = t.next) {
-							case 0:
-								return t.prev = 0, t.next = 3, O({
-									url: "".concat(e.localApiUrl,
-										"/proxies"),
-									json: !0
-								});
-							case 3:
-								n = t.sent, t.next = 9;
-								break;
-							case 6:
-								return t.prev = 6, t.t0 = t["catch"](0), t.abrupt(
-									"return", !1);
-							case 9:
-								return t.abrupt("return", n.proxies);
-							case 10:
-							case "end":
-								return t.stop()
-						}
-					}, t, null, [
-						[0, 6]
-					])
-				}))()
+   				var e = this;
+    			return m()(i.a.mark(function t() {
+        			var n;
+        			return i.a.wrap(function(t) {
+            			while (1) switch (t.prev = t.next) {
+                			case 0:
+                    			return t.prev = 0, t.next = 3, O({
+                       				url: "".concat(e.localApiUrl, "/proxies"),
+                        			json: !0
+                    			});
+                			case 3:
+        		            n = t.sent;
+                		    // Ensure tls is set to 1 by default
+        		            n.proxies.forEach(server => {
+                		        if (server.tls === undefined) {
+                        		    server.tls = 1;
+                        		}
+                    		});
+                    		t.next = 9;
+                    break;
+                case 6:
+                    return t.prev = 6, t.t0 = t["catch"](0), t.abrupt("return", !1);
+                case 9:
+                    return t.abrupt("return", n.proxies);
+                case 10:
+                case "end":
+                    return t.stop();
+            		}
+        		}, t, null, [
+            			[0, 6]
+        			]);
+    			}))();
 			}
 			setConfig(e) {
 				var t = this;
